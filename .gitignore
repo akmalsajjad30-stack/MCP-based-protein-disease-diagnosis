@@ -10,6 +10,8 @@ chroma_data/
 veridx/chroma_data/
 *.sqlite3
 *.db
+reports/
+**/reports/
 
 # Node dependencies and build outputs
 node_modules/

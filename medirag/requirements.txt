@@ -1,0 +1,58 @@
+# VeriDX v3 - Clinical Intelligence Oracle
+# Core API
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-multipart==0.0.17
+websockets==14.1
+python-dotenv==1.0.1
+
+# MCP Server
+mcp[cli]==1.9.2
+
+# DeepSeek (OpenAI-compatible)
+openai==1.57.4
+
+# Graph Database
+neo4j==5.27.0
+
+# Community Detection (free alternative to Neo4j GDS)
+networkx==3.4.2
+leidenalg==0.10.2
+igraph==0.11.8
+
+# Vector Store
+chromadb==0.6.3
+
+# Embeddings & NLP
+sentence-transformers==3.3.1
+torch==2.6.0
+transformers==4.47.1
+
+# Biomedical NLP
+spacy==3.8.3
+presidio-analyzer==2.2.353
+presidio-anonymizer==2.2.353
+
+# Security & Encryption
+cryptography==44.0.0
+# LangChain (orchestration)
+langchain==0.3.13
+langchain-community==0.3.13
+
+# Biomedical Database APIs
+biopython==1.84
+requests==2.32.3
+
+# File Parsing
+pymupdf==1.25.1
+python-docx==1.1.2
+Pillow==11.1.0
+
+# Report Generation
+reportlab==4.2.5
+
+# Utilities
+pydantic==2.10.4
+httpx==0.28.1
+aiohttp==3.11.11
+tenacity==9.0.0
