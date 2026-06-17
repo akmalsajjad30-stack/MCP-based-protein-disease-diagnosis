@@ -2,12 +2,12 @@
 .env
 .env.local
 .env.*.local
-medirag/.env
-medirag/frontend/.env.local
+veridx/.env
+veridx/frontend/.env.local
 
 # Databases
 chroma_data/
-medirag/chroma_data/
+veridx/chroma_data/
 *.sqlite3
 *.db
 
