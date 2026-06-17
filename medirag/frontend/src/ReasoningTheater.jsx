@@ -1,5 +1,5 @@
 // ReasoningTheater.jsx — ACT 2: The Oracle thinks. Live streaming view.
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Brain, Zap, Database, GitBranch, Search, FileText, CheckCircle2 } from 'lucide-react'
 
 const PHASES = [
@@ -70,16 +70,15 @@ function EEGWaveform({ intensity = 1 }) {
 
 export default function ReasoningTheater({ events, currentPhase, isComplete }) {
   const streamRef = useRef()
-  const [toolStates, setToolStates] = useState({})
   const thoughtChunks = events.filter(e => e.type === 'reasoning').map(e => e.text).join('')
-  const toolEvents = events.filter(e => e.type === 'tool_call')
 
-  // Track tool states
-  useEffect(() => {
-    toolEvents.forEach(ev => {
-      setToolStates(prev => ({ ...prev, [ev.tool]: ev.status || 'running' }))
-    })
-  }, [toolEvents])
+  // Track tool states on the fly
+  const toolStates = {}
+  events.forEach(ev => {
+    if (ev.type === 'tool_call') {
+      toolStates[ev.tool] = ev.status || 'running'
+    }
+  })
 
   // Auto-scroll thought stream
   useEffect(() => {

@@ -7,7 +7,7 @@ import json
 import logging
 from typing import AsyncGenerator, Callable
 from openai import AsyncOpenAI
-from backend.config import DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
+from backend.config import DEEPSEEK_API_KEY, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, DEEPSEEK_CHAT_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -122,9 +122,12 @@ RETRIEVED BIOMEDICAL EVIDENCE (from PubMed, UniProt, ClinVar, ChEMBL, FDA FAERS,
 Generate the comprehensive clinical intelligence JSON output now.
 """
 
+    use_reasoner = patient.get("use_reasoner", True)
+    model_to_use = DEEPSEEK_MODEL if use_reasoner else DEEPSEEK_CHAT_MODEL
+
     try:
         stream = await client.chat.completions.create(
-            model=DEEPSEEK_MODEL,
+            model=model_to_use,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt}
