@@ -1,4 +1,4 @@
-# MediRAG - Quick Start
+# VeriDX - Quick Start
 #
 # Run this script from the medirag/ directory.
 # It starts both the FastAPI backend and Vite frontend.
@@ -8,7 +8,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 Write-Host "`n============================================" -ForegroundColor Cyan
-Write-Host "   MediRAG - Clinical Intelligence Oracle" -ForegroundColor Cyan
+Write-Host "   VeriDX - Clinical Intelligence Oracle" -ForegroundColor Cyan
 Write-Host "============================================`n" -ForegroundColor Cyan
 
 # Check .env
@@ -61,7 +61,7 @@ if (Test-Path $envPath) {
     }
 }
 
-Write-Host "`nOK MediRAG is running!" -ForegroundColor Green
+Write-Host "`nOK VeriDX is running!" -ForegroundColor Green
 Write-Host "   Frontend: http://localhost:5173" -ForegroundColor White
 Write-Host "   Backend:  http://localhost:8000" -ForegroundColor White
 Write-Host "   API Docs: http://localhost:8000/docs`n" -ForegroundColor White

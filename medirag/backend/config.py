@@ -1,5 +1,5 @@
 """
-MediRAG v3 — Configuration
+VeriDX v3 — Configuration
 Loads all environment variables with sensible defaults.
 """
 import os

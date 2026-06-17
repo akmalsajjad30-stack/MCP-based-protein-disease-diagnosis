@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 _client: Optional[chromadb.PersistentClient] = None
 _collection = None
 
-COLLECTION_NAME = "medirag_medical_knowledge"
+COLLECTION_NAME = "veridx_medical_knowledge"
 
 _embedding_fn = None
 

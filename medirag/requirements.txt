@@ -1,4 +1,4 @@
-# MediRAG v3 - Clinical Intelligence Oracle
+# VeriDX v3 - Clinical Intelligence Oracle
 # Core API
 fastapi==0.115.5
 uvicorn[standard]==0.32.1

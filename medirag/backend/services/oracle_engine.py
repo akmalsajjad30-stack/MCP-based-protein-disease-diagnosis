@@ -1,5 +1,5 @@
 """
-Oracle Engine — main orchestrator for the MediRAG pipeline.
+Oracle Engine — main orchestrator for the VeriDX pipeline.
 Coordinates: DB fetch -> graph build -> community detect -> hybrid retrieve -> DeepSeek stream
 """
 import asyncio
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 async def run_oracle(patient: dict, uploaded_text: str = "") -> AsyncGenerator[dict, None]:
     """
-    Full MediRAG Oracle pipeline. Yields WebSocket events:
+    Full VeriDX Oracle pipeline. Yields WebSocket events:
       {type: 'phase', phase: str, message: str}
       {type: 'tool_call', tool: str, status: 'running'|'done'|'error'}
       {type: 'reasoning', text: str}        <- DeepSeek think tokens
@@ -144,7 +144,7 @@ async def run_oracle(patient: dict, uploaded_text: str = "") -> AsyncGenerator[d
     # Graph visualization data
     try:
         from backend.graph_rag.neo4j_client import get_subgraph_for_symptoms
-        graph_data = await loop.run_in_executor(None, get_subgraph_for_symptoms, symptoms, 2)
+        graph_data = await loop.run_in_executor(None, get_subgraph_for_symptoms, symptoms, 3)
         yield {"type": "graph_data", "data": graph_data}
     except Exception:
         yield {"type": "graph_data", "data": {"nodes": [], "edges": []}}

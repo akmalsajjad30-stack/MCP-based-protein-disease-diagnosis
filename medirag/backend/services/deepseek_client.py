@@ -16,7 +16,7 @@ client = AsyncOpenAI(
     base_url=DEEPSEEK_BASE_URL,
 )
 
-SYSTEM_PROMPT = """You are MediRAG, a clinical intelligence oracle — NOT a chatbot.
+SYSTEM_PROMPT = """You are VeriDX, a clinical intelligence oracle — NOT a chatbot.
 You receive a complete patient profile and retrieved biomedical evidence once.
 You reason deeply and output a single comprehensive structured JSON response.
 

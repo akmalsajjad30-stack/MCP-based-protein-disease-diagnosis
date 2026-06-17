@@ -187,7 +187,7 @@ export default function App() {
         <div className="nav-brand">
           <div className="nav-logo-icon">⚕️</div>
           <div>
-            <div className="nav-title">Medi<span>RAG</span></div>
+            <div className="nav-title">Veri<span>DX</span></div>
             <div className="nav-subtitle">Clinical Intelligence Oracle</div>
           </div>
         </div>

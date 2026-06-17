@@ -68,7 +68,7 @@ def init_schema():
     logger.info("Neo4j schema initialized.")
 
 
-def get_subgraph_for_symptoms(symptoms: list, depth: int = 2) -> dict:
+def get_subgraph_for_symptoms(symptoms: list, depth: int = 3) -> dict:
     """
     Retrieve a subgraph of nodes and edges related to given symptoms.
     Returns nodes and relationships for frontend visualization.
@@ -79,7 +79,7 @@ def get_subgraph_for_symptoms(symptoms: list, depth: int = 2) -> dict:
     WHERE toLower(s.name) CONTAINS toLower(symptom_name)
     CALL apoc.path.subgraphAll(s, {
         maxLevel: $depth,
-        relationshipFilter: 'INDICATES>|ASSOCIATED_WITH>|TREATS>|TARGETS>|BELONGS_TO>'
+        relationshipFilter: 'INDICATES>|ASSOCIATED_WITH>|TREATS>|TARGETS>|BELONGS_TO>|ENCODES>'
     })
     YIELD nodes, relationships
     RETURN nodes, relationships
@@ -88,59 +88,72 @@ def get_subgraph_for_symptoms(symptoms: list, depth: int = 2) -> dict:
     # Fallback without APOC
     cypher_simple = """
     UNWIND $symptoms AS symptom_name
-    MATCH (s:Symptom)-[:INDICATES]->(c:Condition)
+    MATCH (s:Symptom)-[r1:INDICATES]->(c:Condition)
     WHERE toLower(s.name) CONTAINS toLower(symptom_name)
-    OPTIONAL MATCH (c)-[:ASSOCIATED_WITH]->(g:Gene)
-    OPTIONAL MATCH (d:Drug)-[:TREATS]->(c)
-    RETURN s, c, g, d
-    LIMIT 100
+    OPTIONAL MATCH (c)-[r2:ASSOCIATED_WITH]->(g:Gene)
+    OPTIONAL MATCH (g)-[r3:ENCODES]->(p:Protein)
+    OPTIONAL MATCH (d:Drug)-[r4:TREATS]->(c)
+    RETURN s, r1, c, r2, g, r3, p, r4, d
+    LIMIT 150
     """
+    nodes = []
+    edges = []
+    seen_nodes = set()
+    seen_edges = set()
+
+    def process_value(val):
+        if val is None:
+            return
+        if isinstance(val, (list, set, tuple)):
+            for item in val:
+                process_value(item)
+            return
+
+        # Check if Node
+        if hasattr(val, "labels"):
+            node_id = str(val.element_id) if hasattr(val, "element_id") else str(val.id)
+            if node_id not in seen_nodes:
+                seen_nodes.add(node_id)
+                labels = list(val.labels)
+                label = labels[0] if labels else "Node"
+                props = dict(val)
+                if label == "Gene":
+                    name = props.get("symbol") or props.get("name") or ""
+                elif label == "ClinicalTrial":
+                    name = props.get("nct_id") or props.get("title") or ""
+                else:
+                    name = props.get("display_name") or props.get("name") or ""
+                nodes.append({
+                    "id": node_id,
+                    "label": label,
+                    "name": name,
+                    "properties": props
+                })
+        # Check if Relationship
+        elif hasattr(val, "start_node") and hasattr(val, "end_node"):
+            rel_id = str(val.element_id) if hasattr(val, "element_id") else str(val.id)
+            if rel_id not in seen_edges:
+                seen_edges.add(rel_id)
+                src = str(val.start_node.element_id) if hasattr(val.start_node, "element_id") else str(val.start_node.id)
+                tgt = str(val.end_node.element_id) if hasattr(val.end_node, "element_id") else str(val.end_node.id)
+                edges.append({
+                    "source": src,
+                    "target": tgt,
+                    "type": val.type
+                })
+
     try:
         results = run_query(cypher, {"symptoms": symptoms, "depth": depth})
-        nodes = []
-        edges = []
-        seen_nodes = set()
-        seen_edges = set()
         for row in results:
-            for node in (row.get("nodes") or []):
-                node_id = str(node.element_id) if hasattr(node, "element_id") else str(node.id)
-                if node_id not in seen_nodes:
-                    seen_nodes.add(node_id)
-                    labels = list(node.labels) if hasattr(node, "labels") else []
-                    nodes.append({
-                        "id": node_id,
-                        "label": labels[0] if labels else "Node",
-                        "name": dict(node).get("name", ""),
-                        "properties": dict(node)
-                    })
-            for rel in (row.get("relationships") or []):
-                rel_id = str(rel.element_id) if hasattr(rel, "element_id") else str(rel.id)
-                if rel_id not in seen_edges:
-                    seen_edges.add(rel_id)
-                    src = str(rel.start_node.element_id) if hasattr(rel.start_node, "element_id") else str(rel.start_node.id)
-                    tgt = str(rel.end_node.element_id) if hasattr(rel.end_node, "element_id") else str(rel.end_node.id)
-                    edges.append({"source": src, "target": tgt, "type": rel.type})
+            for val in dict(row).values():
+                process_value(val)
         return {"nodes": nodes, "edges": edges}
     except Exception:
         try:
             results = run_query(cypher_simple, {"symptoms": symptoms})
-            nodes = []
-            edges = []
-            seen_nodes = set()
             for row in results:
-                for key in ["s", "c", "g", "d"]:
-                    node = row.get(key)
-                    if node:
-                        node_id = str(node.element_id) if hasattr(node, "element_id") else str(node.id)
-                        if node_id not in seen_nodes:
-                            seen_nodes.add(node_id)
-                            labels = list(node.labels) if hasattr(node, "labels") else []
-                            nodes.append({
-                                "id": node_id,
-                                "label": labels[0] if labels else "Node",
-                                "name": dict(node).get("name", ""),
-                                "properties": dict(node)
-                            })
+                for val in dict(row).values():
+                    process_value(val)
             return {"nodes": nodes, "edges": edges}
         except Exception as e2:
             logger.error(f"Graph query failed: {e2}")

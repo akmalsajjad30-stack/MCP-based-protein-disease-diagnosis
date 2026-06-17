@@ -363,7 +363,7 @@ export default function ResultsDashboard({ result, communities, graphData, sessi
       {/* Footer */}
       {revealed >= 5 && (
         <div className="disclaimer-footer fade-up">
-          ⚕️ <strong>MediRAG Clinical Intelligence Oracle v3.0</strong> — Generated {new Date().toLocaleString()} ·
+          ⚕️ <strong>VeriDX Clinical Intelligence Oracle v3.0</strong> — Generated {new Date().toLocaleString()} ·
           This report was produced by an AI system using Graph RAG + Clinical AI Reasoner.
           It is NOT a medical diagnosis. All findings must be reviewed and confirmed by a qualified healthcare professional
           before any clinical decision is made. The developers accept no liability for clinical use of this output.

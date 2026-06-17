@@ -1,5 +1,5 @@
 """
-MediRAG FastAPI application.
+VeriDX FastAPI application.
 Exposes:
   POST /oracle        - start an oracle analysis (returns session_id)
   WS   /ws/{session} - WebSocket stream of oracle events
@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="MediRAG Clinical Intelligence Oracle",
+    title="VeriDX Clinical Intelligence Oracle",
     description="Graph RAG + MCP medical diagnostic system. Not a chatbot.",
     version="3.0.0",
     lifespan=lifespan,
@@ -73,7 +73,7 @@ except Exception as e:
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "MediRAG Oracle v3.0"}
+    return {"status": "ok", "service": "VeriDX Oracle v3.0"}
 
 
 @app.post("/oracle/start")
@@ -156,4 +156,4 @@ async def download_report(session_id: str):
     os.makedirs("./reports", exist_ok=True)
     generate_pdf_report(session["patient"], session["result"], output_path)
     return FileResponse(output_path, media_type="application/pdf",
-                        filename="MediRAG_Report.pdf")
+                        filename="VeriDX_Report.pdf")

@@ -2,13 +2,14 @@
 MCP Server — FastMCP with 10 medical tools, 6 resources, 4 prompt templates.
 Mounted into FastAPI at /mcp via SSE transport.
 """
+# pyrefly: ignore [missing-import]
 from mcp.server.fastmcp import FastMCP
 from backend.databases import pubmed, uniprot, clinvar, chembl, fda_faers, omim_clintrials
 from backend.graph_rag.neo4j_client import get_subgraph_for_symptoms
 from backend.graph_rag.community_detector import get_communities_from_neo4j
 import json
 
-mcp = FastMCP("MediRAG Clinical Intelligence Oracle")
+mcp = FastMCP("VeriDX Clinical Intelligence Oracle")
 
 # ═══════════════════════════════════════════════════════════════
 # TOOLS
@@ -65,7 +66,7 @@ def find_clinical_trials(condition: str, max_results: int = 5) -> str:
 
 
 @mcp.tool()
-def query_knowledge_graph(symptoms: list[str], depth: int = 2) -> str:
+def query_knowledge_graph(symptoms: list[str], depth: int = 3) -> str:
     """Traverse the Neo4j medical knowledge graph to find conditions, genes, and drugs related to symptoms."""
     try:
         data = get_subgraph_for_symptoms(symptoms, depth)
@@ -118,7 +119,7 @@ def search_omim(query: str) -> str:
 def get_patient_context() -> str:
     """Current active patient profile context."""
     return json.dumps({
-        "description": "Active patient profile submitted via MediRAG intake form",
+        "description": "Active patient profile submitted via VeriDX intake form",
         "fields": ["age", "sex", "bmi", "symptoms", "medications", "medical_history",
                    "family_history", "blood_pressure", "heart_rate", "temperature"]
     })
