@@ -1,0 +1,52 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+medirag/.env
+medirag/frontend/.env.local
+
+# Databases
+chroma_data/
+medirag/chroma_data/
+*.sqlite3
+*.db
+
+# Node dependencies and build outputs
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+dist-ssr/
+
+# Python cache and virtual envs
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Editor & System Files
+.vscode/
+**/ .vscode/
+.idea/
+**/ .idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+Thumbs.db
