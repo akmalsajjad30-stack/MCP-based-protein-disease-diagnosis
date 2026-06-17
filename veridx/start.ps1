@@ -1,6 +1,6 @@
 # VeriDX - Quick Start
 #
-# Run this script from the medirag/ directory.
+# Run this script from the veridx/ directory.
 # It starts both the FastAPI backend and Vite frontend.
 
 $ErrorActionPreference = "Continue"
