@@ -208,9 +208,17 @@ export default function ResultsDashboard({ result, communities, graphData, sessi
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Leiden Disease Clusters
               </div>
-              {data.communities?.map(c => (
-                <span key={c} className="community-pill">🌐 {c}</span>
-              ))}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {data.communities?.map(c => {
+                  const label = typeof c === 'object' ? (c.summary || c.label || `Cluster ${c.id}`) : c;
+                  const title = typeof c === 'object' && c.members ? `Members: ${c.members.join(', ')}` : '';
+                  return (
+                    <span key={typeof c === 'object' ? c.id : c} className="community-pill" title={title}>
+                      🌐 {label}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

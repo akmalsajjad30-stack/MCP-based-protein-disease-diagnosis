@@ -103,15 +103,16 @@ class InMemoryGraphStore:
             
         out_edges = []
         seen_edges = set()
-        for edge in visited_edges:
-            edge_key = (edge["source"], edge["target"], edge["type"])
-            if edge_key not in seen_edges:
-                seen_edges.add(edge_key)
-                out_edges.append({
-                    "source": edge["source"],
-                    "target": edge["target"],
-                    "type": edge["type"]
-                })
+        for edge in self.edges:
+            if edge["source"] in visited_nodes and edge["target"] in visited_nodes:
+                edge_key = (edge["source"], edge["target"], edge["type"])
+                if edge_key not in seen_edges:
+                    seen_edges.add(edge_key)
+                    out_edges.append({
+                        "source": edge["source"],
+                        "target": edge["target"],
+                        "type": edge["type"]
+                    })
                 
         return {"nodes": out_nodes, "edges": out_edges}
 
