@@ -91,7 +91,10 @@ async def run_oracle(patient: dict, uploaded_text: str = "") -> AsyncGenerator[d
     yield {"type": "phase", "phase": "building_graph", "message": "Building knowledge graph..."}
     yield {"type": "tool_call", "tool": "build_graph", "status": "running"}
     try:
+        from backend.graph_rag.neo4j_client import in_memory_store, USE_IN_MEMORY_FALLBACK
+        logger.info(f"Graph build started. USE_IN_MEMORY_FALLBACK={USE_IN_MEMORY_FALLBACK}. In-memory store: {len(in_memory_store.nodes)} nodes, {len(in_memory_store.edges)} edges.")
         await loop.run_in_executor(None, graph_builder.build_symptom_nodes, symptoms)
+        logger.info(f"After build_symptom_nodes: {len(in_memory_store.nodes)} nodes, {len(in_memory_store.edges)} edges.")
         
         # Build comorbidity nodes and link to symptoms
         comorbidities = patient.get("comorbidities", [])
@@ -121,20 +124,25 @@ async def run_oracle(patient: dict, uploaded_text: str = "") -> AsyncGenerator[d
                     )
                 except Exception:
                     pass
+        logger.info(f"After comorbidities: {len(in_memory_store.nodes)} nodes, {len(in_memory_store.edges)} edges.")
 
         # Build from PubMed
         pubmed_dicts = [{"text": text, "pmid": ""} for text in pubmed_texts]
         await loop.run_in_executor(None, graph_builder.build_from_pubmed, pubmed_dicts, symptoms)
+        logger.info(f"After build_from_pubmed: {len(in_memory_store.nodes)} nodes, {len(in_memory_store.edges)} edges.")
 
         # Build from UniProt
         await loop.run_in_executor(None, graph_builder.build_from_uniprot, uniprot_results)
+        logger.info(f"After build_from_uniprot: {len(in_memory_store.nodes)} nodes, {len(in_memory_store.edges)} edges.")
         
         # Build from ChEMBL
         if drug_docs:
             await loop.run_in_executor(None, graph_builder.build_from_chembl, drug_docs, symptoms + comorbidities)
+            logger.info(f"After build_from_chembl: {len(in_memory_store.nodes)} nodes, {len(in_memory_store.edges)} edges.")
 
         # Build from Clinical Trials
         await loop.run_in_executor(None, graph_builder.build_from_clinical_trials, trial_results)
+        logger.info(f"After build_from_clinical_trials: {len(in_memory_store.nodes)} nodes, {len(in_memory_store.edges)} edges.")
 
         yield {"type": "tool_call", "tool": "build_graph", "status": "done"}
     except Exception as e:
@@ -163,6 +171,29 @@ async def run_oracle(patient: dict, uploaded_text: str = "") -> AsyncGenerator[d
     try:
         await loop.run_in_executor(None, community_detector.run_community_detection)
         communities = await loop.run_in_executor(None, community_detector.get_communities_from_neo4j)
+        
+        # Generate LLM summaries for each community cluster
+        from backend.services.deepseek_client import generate_community_summary
+        from backend.graph_rag.neo4j_client import upsert_node
+        
+        for c in communities:
+            members = c.get("members", [])
+            if members:
+                try:
+                    summary = await generate_community_summary(members)
+                    c["summary"] = summary
+                    # Update in DB/in-memory store
+                    await loop.run_in_executor(
+                        None,
+                        upsert_node,
+                        "Community",
+                        "community_id",
+                        c["id"],
+                        {"summary": summary}
+                    )
+                except Exception as ex:
+                    logger.warning(f"Failed to generate summary for community {c.get('id')}: {ex}")
+                    
         yield {"type": "communities", "data": communities}
         yield {"type": "tool_call", "tool": "detect_communities", "status": "done"}
     except Exception as e:

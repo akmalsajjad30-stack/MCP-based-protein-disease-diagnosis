@@ -55,7 +55,20 @@ def detect_communities_leiden(G: nx.Graph) -> dict[int, int]:
             seed=42
         )
         nx_nodes = list(G.nodes())
-        return {nx_nodes[i]: partition.membership[i] for i in range(len(nx_nodes))}
+        membership = {nx_nodes[i]: partition.membership[i] for i in range(len(nx_nodes))}
+        # If all nodes are grouped in a single community, try a higher resolution partition
+        if len(set(membership.values())) <= 1:
+            try:
+                partition = leidenalg.find_partition(
+                    ig_graph,
+                    leidenalg.RBConfigurationVertexPartition,
+                    resolution_parameter=1.5,
+                    seed=42
+                )
+                membership = {nx_nodes[i]: partition.membership[i] for i in range(len(nx_nodes))}
+            except Exception:
+                pass
+        return membership
     except ImportError:
         logger.warning("leidenalg not available, falling back to Louvain.")
         try:
