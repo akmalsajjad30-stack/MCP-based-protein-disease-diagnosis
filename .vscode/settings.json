@@ -1,0 +1,11 @@
+{
+  "python.defaultInterpreterPath": "C:\\Users\\SA IT SOLUTIONS\\anaconda3\\envs\\medirag\\python.exe",
+  "python.analysis.extraPaths": [
+    "./veridx",
+    "./medirag"
+  ],
+  "python.autoComplete.extraPaths": [
+    "./veridx",
+    "./medirag"
+  ]
+}
