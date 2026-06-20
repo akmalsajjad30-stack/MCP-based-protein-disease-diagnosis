@@ -247,3 +247,61 @@ Patient: {patient_profile}
 Primary Diagnosis: {top_diagnosis}
 
 Format: plain clinical language, no jargon."""
+
+
+# ═══════════════════════════════════════════════════════════════
+# CLINICAL SERVICE GATEWAY
+# ═══════════════════════════════════════════════════════════════
+
+@mcp.tool()
+async def diagnose_patient(
+    symptoms: list[str],
+    age: int = None,
+    sex: str = None,
+    chief_complaint: str = "",
+    current_medications: list[str] = None,
+    comorbidities: list[str] = None,
+    allergies: str = "",
+    family_history: str = "",
+    extra_context: str = "",
+    uploaded_text: str = ""
+) -> str:
+    """Run the complete clinical reasoning pipeline for a patient and return the structured diagnostic report.
+    
+    This encapsulates the entire VeriDX pipeline (database queries, knowledge graph construction,
+    community detection, hybrid retrieval, and clinical reasoning) behind a single service call.
+    """
+    import json
+    from backend.services.oracle_engine import run_oracle
+    
+    patient = {
+        "age": age or 0,
+        "sex": sex or "Unknown",
+        "symptoms": symptoms,
+        "medications": current_medications or [],
+        "chief_complaint": chief_complaint,
+        "comorbidities": comorbidities or [],
+        "allergies": allergies,
+        "family_history": family_history,
+        "extra_context": extra_context
+    }
+    
+    final_data = None
+    try:
+        async for event in run_oracle(patient, uploaded_text):
+            if event.get("type") == "final_answer":
+                final_data = event.get("data")
+                
+        if final_data:
+            return json.dumps(final_data, indent=2)
+        else:
+            return json.dumps({
+                "status": "error",
+                "message": "Oracle pipeline execution completed but no final structured report was compiled."
+            }, indent=2)
+    except Exception as e:
+        return json.dumps({
+            "status": "error",
+            "message": f"Oracle execution encountered an error: {str(e)}"
+        }, indent=2)
+

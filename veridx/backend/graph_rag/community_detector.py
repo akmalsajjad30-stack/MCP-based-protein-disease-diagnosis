@@ -45,7 +45,12 @@ def detect_communities_leiden(G: nx.Graph) -> dict[int, int]:
     if G.number_of_nodes() < 3:
         return {}
     try:
+        # pyrefly: ignore [missing-import]
+        # pyrefly: ignore [missing-import]
+        # pyrefly: ignore [missing-import]
+        # pyrefly: ignore [missing-import]
         import leidenalg
+        # pyrefly: ignore [missing-import]
         import igraph as ig
         # Convert NetworkX to igraph
         ig_graph = ig.Graph.from_networkx(G)
@@ -72,6 +77,7 @@ def detect_communities_leiden(G: nx.Graph) -> dict[int, int]:
     except ImportError:
         logger.warning("leidenalg not available, falling back to Louvain.")
         try:
+            # pyrefly: ignore [missing-import]
             from community import best_partition
             return best_partition(G, random_state=42)
         except ImportError:
