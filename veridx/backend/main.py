@@ -141,7 +141,10 @@ async def oracle_websocket(websocket: WebSocket, session_id: str):
         logger.error(f"Oracle error: {e}")
         await websocket.send_json({"type": "error", "text": str(e)})
     finally:
-        await websocket.close()
+        try:
+            await websocket.close()
+        except Exception:
+            pass
 
 
 @app.get("/report/{session_id}")
