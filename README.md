@@ -542,6 +542,19 @@ The React frontend has four main views:
 
 ---
 
+## Medical Disclaimer
+
+> ⚠️ **This project is intended for research and educational purposes only.**
+>
+> VeriDX is a prototype decision-support system. It is **not a substitute for professional medical diagnosis, clinical judgment, or treatment.** All output must be reviewed by a licensed healthcare professional before any clinical decision is made.
+>
+> - VeriDX has **not been clinically validated**.
+> - VeriDX is **not FDA-approved**.
+> - VeriDX is **not intended for clinical deployment**.
+> - All confidence scores are model estimates, not clinically measured accuracy metrics.
+
+---
+
 ## Contributing
 
 1. Fork the repository
@@ -558,6 +571,61 @@ The React frontend has four main views:
 
 ---
 
+## Contributors
+
+Developed at **Riphah International University, Lahore** by:
+
+- **Muhammad Musa** — [GitHub](https://github.com/akmalsajjad30-stack)
+- **Paiman Ejaz** — *(add GitHub profile)*
+- **Shaheer bin Shahzad** — *(add GitHub profile)*
+
+---
+
+## Citation
+
+If you use VeriDX in your research, please cite:
+
+```
+@misc{veridx2026,
+  title  = {VeriDX: MCP-Integrated Graph RAG Framework for Differential Diagnosis},
+  author = {[Author names]},
+  year   = {2026},
+  url    = {https://github.com/akmalsajjad30-stack/MCP-based-protein-disease-diagnosis}
+}
+```
+
+---
+
+## Copyright
+
+Copyright © 2026 Muhammad Musa, Paiman Ejaz, Shaheer bin Shahzad.  
+Riphah International University, Lahore. All Rights Reserved.
+
+This software and its source code are proprietary. The source code is made publicly visible for
+reference and academic review purposes only.
+
+**No permission is granted to:**
+- Copy, modify, or distribute this software
+- Use this software for commercial purposes
+- Sublicense or sell copies of this software
+
+All rights are reserved by the original authors.
+
+---
+
+
+## Limitations
+
+- **Not clinically validated** — output reflects retrieved biomedical literature, not measured diagnostic accuracy.
+- **API rate limits** — NCBI, FDA FAERS, ChEMBL, and ClinicalTrials.gov impose rate limits; high-volume use may require API keys.
+- **Neo4j optional** — Neo4j provides the best graph performance; the in-memory fallback has reduced graph traversal fidelity.
+- **DeepSeek dependency** — all reasoning requires an active DeepSeek API connection; the system cannot produce output offline.
+- **OMIM requires a key** — OMIM genetic disease lookups will be skipped without a registered API key.
+- **Embeddings require local model** — `sentence-transformers` downloads ~400 MB of model weights on first run.
+
+---
+
 <p align="center">
-  Built with love for clinical decision support research
+  Built for clinical decision support research
 </p>
+

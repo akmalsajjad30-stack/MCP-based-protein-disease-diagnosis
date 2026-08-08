@@ -1,54 +1,90 @@
-# Environment files
-.env
-.env.local
-.env.*.local
-veridx/.env
-veridx/frontend/.env.local
+# ============================================================
+# VeriDX — .gitignore
+# ============================================================
 
-# Databases
+# ── Environment / Secrets ───────────────────────────────────
+.env
+.env.*
+!.env.example
+veridx/.env
+veridx/.env.*
+!veridx/.env.example
+
+# ── Python ──────────────────────────────────────────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Virtual environments ─────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+**/.venv/
+**/venv/
+
+# ── Logs ────────────────────────────────────────────────────
+*.log
+logs/
+**/logs/
+
+# ── Cache ────────────────────────────────────────────────────
+.cache/
+cache/
+**/.cache/
+**/cache/
+.pytest_cache/
+
+# ── Local databases / generated stores ──────────────────────
 chroma_data/
 veridx/chroma_data/
 *.sqlite3
 *.db
+
+# ── Generated reports (PDF output) ──────────────────────────
 reports/
 **/reports/
 
-# Node dependencies and build outputs
+# ── Node.js / Frontend build ─────────────────────────────────
 node_modules/
 **/node_modules/
 dist/
 **/dist/
 dist-ssr/
+.npm/
 
-# Python cache and virtual envs
-__pycache__/
-**/__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-
-# Editor & System Files
+# ── IDE / Editor ─────────────────────────────────────────────
 .vscode/
-**/ .vscode/
+**/.vscode/
 .idea/
-**/ .idea/
-.DS_Store
+**/.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# ── OS Files ─────────────────────────────────────────────────
+.DS_Store
 Thumbs.db
+desktop.ini
+
+# ── Testing / coverage ───────────────────────────────────────
+.coverage
+coverage.xml
+*.cover
+nosetests.xml
+htmlcov/
+.tox/
+
+# ── Pip ──────────────────────────────────────────────────────
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ── Build artefacts ──────────────────────────────────────────
+*.egg-info/
+*.egg
+build/

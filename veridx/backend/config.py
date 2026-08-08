@@ -21,7 +21,7 @@ DEEPSEEK_CHAT_MODEL = os.getenv("DEEPSEEK_CHAT_MODEL", "deepseek-chat")
 # Neo4j
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "medirag2024")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "")
 
 # External APIs
 NCBI_API_KEY = os.getenv("NCBI_API_KEY", "")
